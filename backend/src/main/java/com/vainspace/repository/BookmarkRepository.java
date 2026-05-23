@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface BookmarkRepository extends JpaRepository<Bookmark, Long> {
     List<Bookmark> findAllByOrderByCategoryAscCreatedAtDesc();
+    List<Bookmark> findByUserIdOrderByCategoryAscCreatedAtDesc(Long userId);
+    List<Bookmark> findByIsPublicTrueOrderByCreatedAtDesc();
 }

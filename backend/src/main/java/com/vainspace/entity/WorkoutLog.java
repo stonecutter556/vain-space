@@ -26,6 +26,12 @@ public class WorkoutLog {
 
     private String notes;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(name = "is_public", nullable = false)
+    private Boolean isPublic = false;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -48,6 +54,10 @@ public class WorkoutLog {
     public void setWeight(Double weight) { this.weight = weight; }
     public String getNotes() { return notes; }
     public void setNotes(String notes) { this.notes = notes; }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public Boolean getIsPublic() { return isPublic; }
+    public void setIsPublic(Boolean isPublic) { this.isPublic = isPublic; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

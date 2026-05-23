@@ -24,6 +24,12 @@ public class DailyLog {
     @Column(name = "mood_rating")
     private Integer moodRating;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(name = "is_public", nullable = false)
+    private Boolean isPublic = false;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -45,6 +51,10 @@ public class DailyLog {
     public void setPomodoroCount(Integer pomodoroCount) { this.pomodoroCount = pomodoroCount; }
     public Integer getMoodRating() { return moodRating; }
     public void setMoodRating(Integer moodRating) { this.moodRating = moodRating; }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public Boolean getIsPublic() { return isPublic; }
+    public void setIsPublic(Boolean isPublic) { this.isPublic = isPublic; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

@@ -22,6 +22,12 @@ public class Article {
 
     private String tags;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Column(name = "is_public", nullable = false)
+    private Boolean isPublic = false;
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
@@ -49,6 +55,10 @@ public class Article {
     public void setArticleType(String articleType) { this.articleType = articleType; }
     public String getTags() { return tags; }
     public void setTags(String tags) { this.tags = tags; }
+    public Long getUserId() { return userId; }
+    public void setUserId(Long userId) { this.userId = userId; }
+    public Boolean getIsPublic() { return isPublic; }
+    public void setIsPublic(Boolean isPublic) { this.isPublic = isPublic; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }

@@ -2,6 +2,7 @@ package com.vainspace.controller;
 
 import com.vainspace.entity.Article;
 import com.vainspace.repository.ArticleRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
@@ -16,13 +17,20 @@ public class ArticleController {
     }
 
     @GetMapping
-    public List<Article> getAll() {
-        return articleRepository.findAllByOrderByCreatedAtDesc();
+    public List<Article> getAll(HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        return articleRepository.findByUserIdOrderByCreatedAtDesc(userId);
+    }
+
+    @GetMapping("/public")
+    public List<Article> getPublic() {
+        return articleRepository.findByIsPublicTrueOrderByCreatedAtDesc();
     }
 
     @GetMapping("/type/{type}")
-    public List<Article> getByType(@PathVariable String type) {
-        return articleRepository.findByArticleTypeOrderByCreatedAtDesc(type);
+    public List<Article> getByType(@PathVariable String type, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        return articleRepository.findByUserIdAndArticleTypeOrderByCreatedAtDesc(userId, type);
     }
 
     @GetMapping("/{id}")
@@ -31,18 +39,30 @@ public class ArticleController {
     }
 
     @PostMapping
-    public Article create(@RequestBody Article article) {
+    public Article create(@RequestBody Article article, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        article.setUserId(userId);
+        if (article.getIsPublic() == null) article.setIsPublic(false);
         return articleRepository.save(article);
     }
 
     @PutMapping("/{id}")
-    public Article update(@PathVariable Long id, @RequestBody Article article) {
+    public Article update(@PathVariable Long id, @RequestBody Article article, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        Article existing = articleRepository.findById(id).orElse(null);
+        if (existing == null || !existing.getUserId().equals(userId)) {
+            return null;
+        }
         article.setId(id);
         return articleRepository.save(article);
     }
 
     @DeleteMapping("/{id}")
-    public void delete(@PathVariable Long id) {
-        articleRepository.deleteById(id);
+    public void delete(@PathVariable Long id, HttpServletRequest request) {
+        Long userId = (Long) request.getAttribute("userId");
+        Article existing = articleRepository.findById(id).orElse(null);
+        if (existing != null && existing.getUserId().equals(userId)) {
+            articleRepository.deleteById(id);
+        }
     }
 }

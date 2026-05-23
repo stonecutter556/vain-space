@@ -21,6 +21,9 @@
         <n-form-item label="状态" path="status">
           <n-select v-model:value="form.status" :options="statusOptions" />
         </n-form-item>
+        <n-form-item label="公开">
+          <n-switch v-model:value="form.isPublic" />
+        </n-form-item>
       </n-form>
       <template #footer>
         <n-space justify="end">
@@ -62,7 +65,8 @@ const form = ref({
   title: '',
   description: '',
   targetDate: null,
-  status: '进行中'
+  status: '进行中',
+  isPublic: false
 })
 
 const rules = {
@@ -124,7 +128,7 @@ async function fetchGoals() {
 function openAdd() {
   isEdit.value = false
   editingId.value = null
-  form.value = { title: '', description: '', targetDate: null, status: '进行中' }
+  form.value = { title: '', description: '', targetDate: null, status: '进行中', isPublic: false }
   showModal.value = true
 }
 
@@ -135,7 +139,8 @@ function openEdit(row) {
     title: row.title,
     description: row.description || '',
     targetDate: row.targetDate ? new Date(row.targetDate).getTime() : null,
-    status: row.status || '进行中'
+    status: row.status || '进行中',
+    isPublic: row.isPublic ?? false
   }
   showModal.value = true
 }
@@ -153,7 +158,8 @@ async function handleSubmit() {
       title: form.value.title,
       description: form.value.description,
       targetDate: form.value.targetDate ? new Date(form.value.targetDate).toISOString().split('T')[0] : null,
-      status: form.value.status
+      status: form.value.status,
+      isPublic: form.value.isPublic
     }
     if (isEdit.value && editingId.value) {
       await goalApi.update(editingId.value, payload)

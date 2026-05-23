@@ -35,6 +35,9 @@
         <n-form-item label="内容" path="content">
           <n-input v-model:value="form.content" type="textarea" rows="8" placeholder="请输入文章内容" />
         </n-form-item>
+        <n-form-item label="公开">
+          <n-switch v-model:value="form.isPublic" />
+        </n-form-item>
       </n-form>
       <template #footer>
         <n-space justify="end">
@@ -69,7 +72,8 @@ const typeOptions = [
 const form = ref({
   title: '',
   articleType: 'diary',
-  content: ''
+  content: '',
+  isPublic: false
 })
 
 const rules = {
@@ -98,7 +102,7 @@ function handleTabChange(val) {
 }
 
 function openAdd() {
-  form.value = { title: '', articleType: 'diary', content: '' }
+  form.value = { title: '', articleType: 'diary', content: '', isPublic: false }
   showModal.value = true
 }
 

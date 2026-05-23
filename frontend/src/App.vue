@@ -10,6 +10,15 @@
                 <span class="logo-text">Vain Space</span>
               </router-link>
               <n-menu mode="horizontal" :value="activeKey" :options="menuOptions" @update:value="handleMenuSelect" class="nav-menu" />
+              <div class="header-right">
+                <router-link to="/profile" class="header-user-btn" v-if="authStore.isLoggedIn">
+                  <span class="header-user-avatar">{{ authStore.username.charAt(0).toUpperCase() }}</span>
+                  <span class="header-user-name">{{ authStore.username }}</span>
+                </router-link>
+                <router-link v-if="authStore.isAdmin" to="/admin" class="header-admin-link">管理</router-link>
+                <a v-if="authStore.isLoggedIn" class="header-logout" @click="handleLogout">退出</a>
+                <router-link v-else to="/login" class="header-login-btn">登录</router-link>
+              </div>
             </div>
           </n-layout-header>
           <n-layout-content class="app-content">
@@ -27,11 +36,13 @@ import { useRoute, useRouter } from 'vue-router'
 import { NIcon, darkTheme } from 'naive-ui'
 import {
   HomeOutline, FlagOutline, BookOutline, FitnessOutline,
-  TimeOutline, BookmarkOutline, CubeOutline
+  TimeOutline, BookmarkOutline, CompassOutline, ChatboxOutline, SearchOutline
 } from '@vicons/ionicons5'
+import { useAuthStore } from './store/auth'
 
 const route = useRoute()
 const router = useRouter()
+const authStore = useAuthStore()
 
 const activeKey = computed(() => route.name)
 
@@ -63,11 +74,17 @@ const menuOptions = [
   { label: '健身', key: 'Workout', icon: renderIcon(FitnessOutline) },
   { label: '番茄钟', key: 'Pomodoro', icon: renderIcon(TimeOutline) },
   { label: '书签', key: 'Bookmarks', icon: renderIcon(BookmarkOutline) },
-  { label: '3D', key: 'ClothSim', icon: renderIcon(CubeOutline) }
+  { label: '发现', key: 'Discover', icon: renderIcon(CompassOutline) },
+  { label: '消息', key: 'Messages', icon: renderIcon(ChatboxOutline) }
 ]
 
 function handleMenuSelect(key) {
   router.push({ name: key })
+}
+
+function handleLogout() {
+  authStore.logout()
+  router.push('/login')
 }
 </script>
 
@@ -219,6 +236,97 @@ a { color: inherit; text-decoration: none; }
 
 .nav-menu .n-menu-item.n-menu-item--active::after {
   background: rgba(255, 255, 255, 0.3) !important;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 300;
+  flex-shrink: 0;
+}
+
+.header-user-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 12px 4px 4px;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  text-decoration: none;
+  transition: all 0.2s;
+  cursor: pointer;
+}
+
+.header-user-btn:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.header-user-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 400;
+}
+
+.header-user-name {
+  color: rgba(255, 255, 255, 0.5);
+  font-size: 13px;
+}
+
+.header-user-btn:hover .header-user-name {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.header-admin-link {
+  padding: 4px 10px;
+  border-radius: 8px;
+  border: 1px solid rgba(100, 160, 255, 0.2);
+  color: rgba(100, 160, 255, 0.5);
+  text-decoration: none;
+  font-size: 12px;
+  transition: all 0.2s;
+}
+
+.header-admin-link:hover {
+  border-color: rgba(100, 160, 255, 0.4);
+  color: rgba(100, 160, 255, 0.8);
+}
+
+.header-logout {
+  color: rgba(255, 255, 255, 0.2);
+  cursor: pointer;
+  text-decoration: none;
+  font-size: 12px;
+  transition: color 0.2s;
+}
+
+.header-logout:hover {
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.header-login-btn {
+  padding: 6px 16px;
+  border-radius: 16px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  color: rgba(255, 255, 255, 0.4);
+  text-decoration: none;
+  font-size: 13px;
+  transition: all 0.2s;
+}
+
+.header-login-btn:hover {
+  border-color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 255, 255, 0.7);
 }
 
 .app-content {

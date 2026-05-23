@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface PomodoroSessionRepository extends JpaRepository<PomodoroSession, Long> {
     List<PomodoroSession> findAllByOrderByStartTimeDesc();
+    List<PomodoroSession> findByUserIdOrderByStartTimeDesc(Long userId);
+    List<PomodoroSession> findByIsPublicTrueOrderByCreatedAtDesc();
 }

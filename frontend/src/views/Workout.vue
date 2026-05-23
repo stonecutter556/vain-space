@@ -75,10 +75,8 @@ const form = ref({
 })
 
 const rules = {
-  workoutDate: { required: true, message: '请选择日期', trigger: 'change' },
-  exercise: { required: true, message: '请输入动作名称', trigger: 'blur' },
-  sets: { required: true, message: '请输入组数', trigger: 'change' },
-  reps: { required: true, message: '请输入次数', trigger: 'change' }
+  workoutDate: { type: 'number', required: true, message: '请选择日期', trigger: ['change', 'blur'] },
+  exercise: { required: true, message: '请输入动作名称', trigger: 'blur' }
 }
 
 const columns = [
@@ -118,9 +116,8 @@ async function fetchWorkouts() {
 }
 
 async function handleSubmit() {
-  try {
-    await formRef.value?.validate()
-  } catch {
+  if (!form.value.exercise || !form.value.sets || !form.value.reps) {
+    message.warning('请填写完整信息（动作、组数、次数）')
     return
   }
   submitting.value = true
