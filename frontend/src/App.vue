@@ -6,21 +6,48 @@
         <n-layout class="app-layout">
           <n-layout-header class="app-header" bordered>
             <div class="header-inner">
-              <router-link to="/" class="logo">
-                <span class="logo-text">Vain Space</span>
-              </router-link>
+              <div class="header-left">
+                <a class="nav-toggle" @click="navOpen = !navOpen">
+                  <span :class="['nav-toggle-bar', { open: navOpen }]"></span>
+                </a>
+                <router-link to="/" class="logo">
+                  <span class="logo-text">Vain Space</span>
+                </router-link>
+              </div>
               <n-menu mode="horizontal" :value="activeKey" :options="menuOptions" @update:value="handleMenuSelect" class="nav-menu" />
               <div class="header-right">
                 <router-link to="/profile" class="header-user-btn" v-if="authStore.isLoggedIn">
                   <span class="header-user-avatar">{{ authStore.username.charAt(0).toUpperCase() }}</span>
-                  <span class="header-user-name">{{ authStore.username }}</span>
                 </router-link>
-                <router-link v-if="authStore.isAdmin" to="/admin" class="header-admin-link">管理</router-link>
-                <a v-if="authStore.isLoggedIn" class="header-logout" @click="handleLogout">退出</a>
-                <router-link v-else to="/login" class="header-login-btn">登录</router-link>
               </div>
             </div>
           </n-layout-header>
+          <div :class="['nav-drawer-bg', { open: navOpen }]" @click="navOpen = false"></div>
+          <div :class="['nav-drawer', { open: navOpen }]">
+            <div class="nav-drawer-header">
+              <span class="nav-drawer-title">Vain Space</span>
+              <a class="nav-drawer-close" @click="navOpen = false">✕</a>
+            </div>
+            <div class="nav-drawer-user" v-if="authStore.isLoggedIn">
+              <span class="nav-drawer-avatar">{{ authStore.username.charAt(0).toUpperCase() }}</span>
+              <div class="nav-drawer-user-info">
+                <span class="nav-drawer-username">{{ authStore.username }}</span>
+                <router-link to="/profile" class="nav-drawer-profile-link" @click="navOpen = false">个人中心</router-link>
+              </div>
+            </div>
+            <div class="nav-drawer-links">
+              <router-link v-for="item in menuOptions" :key="item.key" :to="{ name: item.key }"
+                :class="['nav-drawer-link', { active: activeKey === item.key }]" @click="navOpen = false">
+                <component :is="item.icon?.()" class="nav-drawer-icon" />
+                <span>{{ item.label }}</span>
+              </router-link>
+            </div>
+            <div class="nav-drawer-footer">
+              <router-link v-if="authStore.isAdmin" to="/admin" class="nav-drawer-footer-link" @click="navOpen = false">管理后台</router-link>
+              <a v-if="authStore.isLoggedIn" class="nav-drawer-footer-link" @click="handleLogout; navOpen = false">退出登录</a>
+              <router-link v-else to="/login" class="nav-drawer-footer-link" @click="navOpen = false">登录</router-link>
+            </div>
+          </div>
           <n-layout-content class="app-content">
             <router-view />
           </n-layout-content>
@@ -31,7 +58,7 @@
 </template>
 
 <script setup>
-import { computed, h } from 'vue'
+import { ref, computed, h } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { NIcon, darkTheme } from 'naive-ui'
 import {
@@ -43,6 +70,8 @@ import { useAuthStore } from './store/auth'
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
+
+const navOpen = ref(false)
 
 const activeKey = computed(() => route.name)
 
@@ -80,6 +109,7 @@ const menuOptions = [
 
 function handleMenuSelect(key) {
   router.push({ name: key })
+  navOpen.value = false
 }
 
 function handleLogout() {
@@ -211,31 +241,200 @@ a { color: inherit; text-decoration: none; }
   letter-spacing: 0.02em;
 }
 
+.nav-toggle {
+  display: none;
+  width: 28px;
+  height: 28px;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.header-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.nav-toggle-bar {
+  display: block;
+  width: 18px;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  position: relative;
+  transition: background 0.2s;
+}
+
+.nav-toggle-bar::before,
+.nav-toggle-bar::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.5);
+  transition: all 0.25s;
+}
+
+.nav-toggle-bar::before { top: -6px; }
+.nav-toggle-bar::after { top: 6px; }
+.nav-toggle-bar.open { background: transparent; }
+.nav-toggle-bar.open::before { top: 0; transform: rotate(45deg); }
+.nav-toggle-bar.open::after { top: 0; transform: rotate(-45deg); }
+
+.nav-drawer-bg {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 200;
+}
+
+.nav-drawer-bg.open { display: block; }
+
+.nav-drawer {
+  position: fixed;
+  top: 0; left: 0;
+  width: 280px;
+  height: 100vh;
+  background: rgba(0, 0, 0, 0.92);
+  backdrop-filter: blur(20px);
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  z-index: 210;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-drawer.open { transform: translateX(0); }
+
+.nav-drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nav-drawer-title {
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+.nav-drawer-close {
+  font-size: 18px;
+  color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+  padding: 4px;
+}
+
+.nav-drawer-user {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nav-drawer-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  color: rgba(255, 255, 255, 0.5);
+  flex-shrink: 0;
+}
+
+.nav-drawer-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.nav-drawer-username {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.6);
+  font-weight: 300;
+}
+
+.nav-drawer-profile-link {
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.25);
+  text-decoration: none;
+  margin-top: 2px;
+}
+
+.nav-drawer-links {
+  flex: 1;
+  overflow-y: auto;
+  padding: 8px 0;
+}
+
+.nav-drawer-link {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 20px;
+  color: rgba(255, 255, 255, 0.45);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 300;
+  transition: all 0.15s;
+  border-left: 3px solid transparent;
+}
+
+.nav-drawer-link:hover {
+  color: rgba(255, 255, 255, 0.7);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-drawer-link.active {
+  color: rgba(255, 255, 255, 0.8);
+  border-left-color: rgba(255, 255, 255, 0.4);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.nav-drawer-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: currentColor;
+  opacity: 0.7;
+}
+
+.nav-drawer-footer {
+  padding: 12px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nav-drawer-footer-link {
+  color: rgba(255, 255, 255, 0.25);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 300;
+  cursor: pointer;
+}
+
+.nav-drawer-footer-link:hover {
+  color: rgba(255, 255, 255, 0.5);
+}
+
 .nav-menu {
   background: transparent !important;
   flex: none;
-}
-
-.nav-menu .n-menu-item {
-  color: rgba(255, 255, 255, 0.4) !important;
-  font-weight: 300 !important;
-  font-size: 13px;
-}
-
-.nav-menu .n-menu-item:hover {
-  color: rgba(255, 255, 255, 0.7) !important;
-}
-
-.nav-menu .n-menu-item.n-menu-item--active {
-  color: rgba(255, 255, 255, 0.8) !important;
-}
-
-.nav-menu .n-menu-item .n-menu-item-icon {
-  color: inherit !important;
-}
-
-.nav-menu .n-menu-item.n-menu-item--active::after {
-  background: rgba(255, 255, 255, 0.3) !important;
 }
 
 .header-right {
@@ -276,57 +475,6 @@ a { color: inherit; text-decoration: none; }
   font-size: 13px;
   color: rgba(255, 255, 255, 0.5);
   font-weight: 400;
-}
-
-.header-user-name {
-  color: rgba(255, 255, 255, 0.5);
-  font-size: 13px;
-}
-
-.header-user-btn:hover .header-user-name {
-  color: rgba(255, 255, 255, 0.7);
-}
-
-.header-admin-link {
-  padding: 4px 10px;
-  border-radius: 8px;
-  border: 1px solid rgba(100, 160, 255, 0.2);
-  color: rgba(100, 160, 255, 0.5);
-  text-decoration: none;
-  font-size: 12px;
-  transition: all 0.2s;
-}
-
-.header-admin-link:hover {
-  border-color: rgba(100, 160, 255, 0.4);
-  color: rgba(100, 160, 255, 0.8);
-}
-
-.header-logout {
-  color: rgba(255, 255, 255, 0.2);
-  cursor: pointer;
-  text-decoration: none;
-  font-size: 12px;
-  transition: color 0.2s;
-}
-
-.header-logout:hover {
-  color: rgba(255, 255, 255, 0.4);
-}
-
-.header-login-btn {
-  padding: 6px 16px;
-  border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  color: rgba(255, 255, 255, 0.4);
-  text-decoration: none;
-  font-size: 13px;
-  transition: all 0.2s;
-}
-
-.header-login-btn:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  color: rgba(255, 255, 255, 0.7);
 }
 
 .app-content {
@@ -473,5 +621,36 @@ a { color: inherit; text-decoration: none; }
 
 .n-select .n-base-selection {
   background: rgba(255, 255, 255, 0.06) !important;
+}
+
+@media (max-width: 768px) {
+  .header-inner {
+    padding: 0 16px;
+  }
+
+  .nav-toggle {
+    display: flex;
+  }
+
+  .nav-menu {
+    display: none;
+  }
+
+  .header-right {
+    gap: 4px;
+  }
+
+  .header-user-btn {
+    padding: 4px;
+    border: none;
+  }
+
+  .header-user-btn:hover {
+    background: transparent;
+  }
+
+  .app-content {
+    padding: 12px 16px;
+  }
 }
 </style>

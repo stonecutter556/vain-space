@@ -36,6 +36,18 @@ public class Goal {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
 
+    @Column(length = 20)
+    private String type = "goal";
+
+    @Column(name = "done")
+    private Boolean done = false;
+
+    @Column(name = "estimated_hours")
+    private Double estimatedHours;
+
+    @Column(name = "completed_hours")
+    private Double completedHours = 0.0;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -68,4 +80,12 @@ public class Goal {
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
     public LocalDateTime getUpdatedAt() { return updatedAt; }
     public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+    public String getType() { return type; }
+    public void setType(String type) { this.type = type; }
+    public Boolean getDone() { return done; }
+    public void setDone(Boolean done) { this.done = done; }
+    public Double getEstimatedHours() { return estimatedHours; }
+    public void setEstimatedHours(Double estimatedHours) { this.estimatedHours = estimatedHours; }
+    public Double getCompletedHours() { return completedHours; }
+    public void setCompletedHours(Double completedHours) { this.completedHours = completedHours; }
 }

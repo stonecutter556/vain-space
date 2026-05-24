@@ -33,7 +33,7 @@ export const authApi = {
 }
 
 export const goalApi = {
-  getAll: () => api.get('/goals'),
+  getAll: (params) => api.get('/goals', { params }),
   getPublic: () => api.get('/goals/public'),
   create: (data) => api.post('/goals', data),
   update: (id, data) => api.put(`/goals/${id}`, data),
@@ -69,6 +69,7 @@ export const workoutApi = {
 export const pomodoroApi = {
   getAll: () => api.get('/pomodoro'),
   getPublic: () => api.get('/pomodoro/public'),
+  getStats: (date) => api.get('/pomodoro/stats', { params: { date } }),
   create: (data) => api.post('/pomodoro', data),
   update: (id, data) => api.put(`/pomodoro/${id}`, data)
 }

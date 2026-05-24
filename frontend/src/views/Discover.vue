@@ -281,4 +281,9 @@ onMounted(fetchArticles)
   font-weight: 300;
   line-height: 1.4;
 }
+
+@media (max-width: 768px) {
+  .discover-page { padding: 0 10px; }
+  .discover-grid { grid-template-columns: 1fr; gap: 12px; }
+}
 </style>

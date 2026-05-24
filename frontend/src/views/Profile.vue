@@ -267,4 +267,10 @@ onMounted(fetchProfile)
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+  .profile-page { padding: 0 10px; }
+  .profile-card { padding: 24px 20px; }
+  .profile-avatar { width: 72px; height: 72px; }
+}
 </style>

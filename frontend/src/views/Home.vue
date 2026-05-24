@@ -175,6 +175,7 @@ function saveLayout() {
 }
 
 function onDragStart(e, i) {
+  if (window.innerWidth < 768) return
   if (e.button !== 0) return
   dragIndex = i
   const rect = homeRef.value.getBoundingClientRect()
@@ -716,5 +717,41 @@ onUnmounted(() => {
   font-weight: 300;
   color: rgba(255, 255, 255, 0.5);
   font-variant-numeric: tabular-nums;
+}
+
+@media (max-width: 768px) {
+  .widget-home {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px;
+  }
+  .widget-block {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    left: auto !important;
+    top: auto !important;
+    min-height: 80px;
+    border-radius: 14px;
+  }
+  .widget-block.expanded {
+    min-height: 120px;
+  }
+  .clock-time {
+    font-size: 32px;
+  }
+  .clock-time-wide {
+    font-size: 28px;
+  }
+  .stats-wide {
+    flex-wrap: wrap;
+  }
+  .stats-item {
+    min-width: 80px;
+  }
+  .progress-grid {
+    gap: 2px;
+  }
 }
 </style>

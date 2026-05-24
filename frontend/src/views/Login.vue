@@ -157,4 +157,8 @@ async function submit() {
 .auth-switch:hover {
   color: rgba(255, 255, 255, 0.5);
 }
+
+@media (max-width: 768px) {
+  .auth-card { width: 90%; padding: 28px 20px; }
+}
 </style>

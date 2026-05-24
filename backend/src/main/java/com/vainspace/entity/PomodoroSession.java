@@ -34,6 +34,9 @@ public class PomodoroSession {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Column(name = "goal_id")
+    private Long goalId;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();
@@ -57,4 +60,6 @@ public class PomodoroSession {
     public void setIsPublic(Boolean isPublic) { this.isPublic = isPublic; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+    public Long getGoalId() { return goalId; }
+    public void setGoalId(Long goalId) { this.goalId = goalId; }
 }

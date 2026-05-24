@@ -17,8 +17,11 @@ public class GoalController {
     }
 
     @GetMapping
-    public List<Goal> getAll(HttpServletRequest request) {
+    public List<Goal> getAll(HttpServletRequest request, @RequestParam(required = false) String type) {
         Long userId = (Long) request.getAttribute("userId");
+        if (type != null) {
+            return goalRepository.findByUserIdAndTypeOrderByCreatedAtDesc(userId, type);
+        }
         return goalRepository.findByUserIdOrderByCreatedAtDesc(userId);
     }
 

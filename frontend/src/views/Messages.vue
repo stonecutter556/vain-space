@@ -189,4 +189,8 @@ onMounted(fetchConversations)
   color: rgba(255, 255, 255, 0.2);
   font-weight: 300;
 }
+
+@media (max-width: 768px) {
+  .messages-page { padding: 0 10px; }
+}
 </style>

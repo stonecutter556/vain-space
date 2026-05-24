@@ -268,4 +268,9 @@ onMounted(fetchMessages)
   opacity: 0.3;
   cursor: not-allowed;
 }
+
+@media (max-width: 768px) {
+  .chat-page { padding: 0; }
+  .chat-messages { padding: 10px; }
+}
 </style>
